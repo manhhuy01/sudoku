@@ -1,3 +1,39 @@
+const EXAMPLE = {
+    1: `
+    015804000
+    000005600
+    390200080
+    000002053
+    540000206
+    003900000
+    000019400
+    052037968
+    974028015
+    `,
+    2: `
+    904005600
+    000490000
+    000208040
+    032904000
+    705000000
+    100000280
+    561700008
+    000800700
+    000009015`,
+    3: `
+    000400030
+    107080002
+    050000000
+    080000005
+    509003020
+    060090000
+    902070001
+    006000000
+    000008700
+    `,
+}
+
+
 const initBoard = () => {
     let table = $('#board')
     for (let i = 0; i < 9; i++) {
@@ -26,8 +62,9 @@ const initEvent = () => {
         $(this).click(clickOnCell)
     });
     $('#solve').click(solve)
-    $('#ex1').click(example1)
-    $('#ex2').click(example2)
+    $('#ex1').click(() => createExample(1))
+    $('#ex2').click(() => createExample(2))
+    $('#ex3').click(() => createExample(3))
 }
 
 const convertDatStringToArr = (str) => {
@@ -46,19 +83,9 @@ const convertIndexToXY = (index) => {
     }
 }
 
-const example1 = () => {
-    let str = `
-        015804000
-        000005600
-        390200080
-        000002053
-        540000206
-        003900000
-        000019400
-        052037968
-        974028015
-    `
-    let dataArr = convertDatStringToArr(str);
+const createExample = (indexEx) => {
+    let dataExp = EXAMPLE[indexEx];
+    let dataArr = convertDatStringToArr(dataExp);
     dataArr.forEach((val, i) => {
         const { x, y } = convertIndexToXY(i);
         if (+val) {
@@ -69,28 +96,6 @@ const example1 = () => {
     });
 }
 
-const example2 = () => {
-    let str = `
-        904005600
-        000490000
-        000208040
-        032904000
-        705000000
-        100000280
-        561700008
-        000800700
-        000009015
-    `
-    let dataArr = convertDatStringToArr(str);
-    dataArr.forEach((val, i) => {
-        const { x, y } = convertIndexToXY(i);
-        if (+val) {
-            render1Cell(x, y, val);
-        } else {
-            render1Cell(x, y, '');
-        }
-    });
-}
 
 const collectDataOnBoard = () => {
     let arr = [];
@@ -193,11 +198,11 @@ const algorithmSudoku = async (data, notifier) => {
             if (lastStep && lastStep.x === arrChoices[0].x && lastStep.y === arrChoices[0].y) {
                 // bước nay đã bí trước đó thì tìm anotherchoices
                 let anotherChoice = undefined;
-                while(!anotherChoice || !step.length) {
+                while (!anotherChoice || !step.length) {
                     let lastStep = step.pop();
                     const { x, y } = lastStep;
                     let anotherChoices = $(lastStep.choices).not(lastStep.chosen).get();
-                    if(anotherChoices.length){
+                    if (anotherChoices.length) {
                         anotherChoice = anotherChoices[0];
                         lastStep.chosen.push(anotherChoice);
                         step.push(lastStep)
@@ -208,7 +213,7 @@ const algorithmSudoku = async (data, notifier) => {
                         notifier(x, y, '')
                     }
                 }
-              
+
             } else {
                 // đi tiếp
                 const { x, y, choices } = arrChoices[0];
@@ -233,12 +238,12 @@ const algorithmSudoku = async (data, notifier) => {
         await sleep(500);
     } while (step.length && arrChoices.length)
 
-    if(arrChoices.length){
+    if (arrChoices.length) {
         alert('thua');
     } else {
         alert('done');
     }
-    
+
 }
 
 
