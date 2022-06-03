@@ -27,6 +27,7 @@ const initEvent = () => {
     });
     $('#solve').click(solve)
     $('#ex1').click(example1)
+    $('#ex2').click(example2)
 }
 
 const convertDatStringToArr = (str) => {
@@ -56,6 +57,29 @@ const example1 = () => {
         000019400
         052037968
         974028015
+    `
+    let dataArr = convertDatStringToArr(str);
+    dataArr.forEach((val, i) => {
+        const { x, y } = convertIndexToXY(i);
+        if (+val) {
+            render1Cell(x, y, val);
+        } else {
+            render1Cell(x, y, '');
+        }
+    });
+}
+
+const example2 = () => {
+    let str = `
+        904005600
+        000490000
+        000208040
+        032904000
+        705000000
+        100000280
+        561700008
+        000800700
+        000009015
     `
     let dataArr = convertDatStringToArr(str);
     dataArr.forEach((val, i) => {
@@ -198,7 +222,7 @@ const algorithmSudoku = async (data, notifier) => {
                 notifier(x, y, choices[0])
             }
 
-        } else if (step.length) {
+        } else if (step.length && arrChoices.length) {
             // không thì quay ngược bước trước.
             let lastStep = step.pop();
             step.push(lastStep);
@@ -209,10 +233,12 @@ const algorithmSudoku = async (data, notifier) => {
         await sleep(500);
     } while (step.length && arrChoices.length)
 
-    // while (1) {
-    //     notifier(Math.round(Math.random() * 9), Math.round(Math.random() * 9), Math.round(Math.random() * 9));
-    //     await sleep(500)
-    // }
+    if(arrChoices.length){
+        alert('thua');
+    } else {
+        alert('done');
+    }
+    
 }
 
 
